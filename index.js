@@ -48,31 +48,71 @@ function playRound(playerSelection, computerSelection) {
     return output;
 }
 
-//Function called game
-//Up to 5 round game
-//Keeps the score
-//Reports the winner and loser
-function game() {
-    var player = 0;
-    var computer = 0;
-    for (let i = 0; i < 5; i++) {
-        var playerSelection = prompt("What is your pick (Rock, Paper, Scissors): ");
-        var output = playRound(playerSelection, computerPlay());
-        alert(output);
-        if (output.toLowerCase().search("you win") != -1) {
-            player += 1;
-        } else if (output.toLowerCase().search("you lose") != -1) {
-            computer += 1;
-        }
+
+
+
+//Create an add event listener to each button
+//get the value of the button
+//Change the Display for Computer 
+//Store the result of the game per Round
+// Store for winner-player
+// Store for ties
+// Store for winner computer
+//Announce the winner of the game once someone reaches at 5 points
+//There should be a counter for the variable to know that it is 5 points
+var button = document.querySelectorAll('button');
+var displayPlayer = document.querySelector("#playerChoice");
+var displayComputer = document.querySelector("#computerChoice");
+var counter = 1;
+var winsPlayer = document.querySelector(".wins-player span");
+var ties = document.querySelector(".ties span");
+var winsComputer = document.querySelector(".wins-computer span");
+var round = document.querySelector(".round h1");
+var winnerDisplay = document.querySelector(".winner h1");
+button.forEach(playerChoice => {
+    playerChoice.addEventListener('click', (e) => {
+        counter += 1;
+        round.innerText = `ROUND ${counter}`
+        var computerSelection = computerPlay();
+        displayPlayer.innerText = playerChoice.value;
+        displayComputer.innerText = computerSelection;
+        var output = playRound(playerChoice.value, computerSelection);
+        game(output);
+        winner();
+    });
+});
+
+
+function game(output) {
+    if (output.toLowerCase().search("you win") != -1) {
+        winsPlayer.innerText = parseInt(winsPlayer.innerText) + 1;
+    } else if (output.toLowerCase().search("you lose") != -1) {
+        winsComputer.innerText = parseInt(winsComputer.innerText) + 1;
     }
-    if (player > computer) {
-        console.log(`You win the score is Man: ${player} vs Computer ${computer}`);
-    }
-    else if (player < computer) {
-        console.log(`You lose the score is Man: ${player} vs Computer ${computer}`);
-    } else {
-        console.log("Draw");
+    else {
+        ties.innerText = parseInt(ties.innerText) + 1;
     }
 }
 
-game();
+function winner() {
+
+    if (parseInt(winsPlayer.innerText) === 5) {
+        winnerDisplay.innerHTML = "<h1>The winner is <em>You</em></h1>";
+        reset();
+    } else if (parseInt(winsComputer.innerText) === 5) {
+        winnerDisplay.innerHTML = "<h1>The winner is the <em>Computer</em></h1>"
+        reset();
+    }
+    else {
+        winnerDisplay.innerHTML = ""
+    }
+
+
+}
+
+function reset() {
+    winsPlayer.innerText = "-";;
+    winsComputer.innerText = "-";;
+    ties.innerText = "-";
+    round.innerText = `ROUND -`
+}
